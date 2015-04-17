@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MadBlowfish2D - Using Layers</title>
+</head>
+<body onload="Init()">
+<canvas id="CanvasID" width="500" height="500"></canvas>
+<script src="../../build/MadBlowfish2D.min.js"></script>
+<script>
+
+// Our Global Vars
+var scene, loader;
+
+var Init = function()
+{
+
+	// Create Scene and Set Canvas element Id
+	scene = new SceneCanvas("CanvasID");
+	// Lets Load a Texture
+	loader = new PreloadImages();
+	// Lets Load out Texture
+	loader.Load("../assets/HTML5.png").OnComplete(Loaded);
+}
+var Loaded = function()
+{
+	for (var i=0;i<5;i++)
+	{
+		// Create Our Sprite
+		var sprite = new Sprite();
+		sprite.LoadTexture(loader.GetImage("../assets/HTML5.png"));
+
+		// Set in the middle of the Canvas
+		sprite.transformation.position.x = scene.GetWidth()*.5-100;
+		sprite.transformation.position.y = scene.GetHeight()*.5-100;		
+
+		// Add Sprite to Scene
+		scene.Add(sprite,i+1);
+
+		var layer = scene.GetLayer(i+1);
+		layer.SetOpacity(1-i*.2);
+		layer.transformation.scale.x = layer.transformation.scale.y = 1 +0.3*i;
+	}
+
+	Loop();
+}
+var Loop = function()
+{
+	// Scene Update
+	scene.Update();
+
+	// Draw Scene
+	scene.Draw();
+
+	// Loop
+	requestAnimationFrame(Loop);
+}
+</script>
+</body>
+</html>

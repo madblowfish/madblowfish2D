@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MadBlowfish2D - Sprite Clipping</title>
+</head>
+<body onload="Init()">
+<canvas id="CanvasID" width="500" height="500"></canvas>
+<script src="../../build/MadBlowfish2D.min.js"></script>
+<script>
+
+// Our Global Vars
+var scene, loader;
+
+var Init = function()
+{
+	// Create Scene and Set Canvas element Id
+	scene = new SceneCanvas("CanvasID");
+	// Lets Load a Texture
+	loader = new PreloadImages();
+	// Lets Load out Texture
+	loader.Load("../assets/HTML5_CLIPPING.png").OnComplete(Loaded);
+}
+var Loaded = function()
+{
+	// Create Our Sprite
+	var sprite = new Sprite();
+	sprite.LoadTexture(loader.GetImage("../assets/HTML5_CLIPPING.png"));
+	
+	// Set in the middle of the Canvas
+	sprite.transformation.position.x = scene.GetWidth()*.5;
+	sprite.transformation.position.y = scene.GetHeight()*.5;
+
+	// Add Sprite to Scene
+	scene.Add(sprite);
+
+	// Lets add some circular movement to sprite
+	sprite.Update = function(time)
+	{
+		this.SetClipping(this.GetWidth()*.5+Math.sin(time)*70,0,128,128);
+	}
+
+	Loop();
+}
+var Loop = function()
+{
+	// Scene Update
+	scene.Update();
+
+	// Draw Scene
+	scene.Draw();
+
+	// Loop
+	requestAnimationFrame(Loop);
+}
+</script>
+</body>
+</html>

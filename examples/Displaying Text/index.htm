@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MadBlowfish2D - Displaying Text</title>
+</head>
+<body onload="Init()">
+<canvas id="CanvasID" width="500" height="500"></canvas>
+<script src="../../build/MadBlowfish2D.min.js"></script>
+<script>
+
+// Our Global Vars
+var scene;
+
+var Init = function()
+{
+	// Create Scene and Set Canvas element Id
+	scene = new SceneCanvas("CanvasID");
+
+	// Create Our Sprite
+	var text = new Text2D();
+	text.SetFont("bold 20pt Arial");
+	text.SetText("MadBlowfish2D!");
+
+	// Set in the middle of the Canvas
+	text.transformation.position.x = scene.GetWidth()*.5;
+	text.transformation.position.y = scene.GetHeight()*.5;
+
+	// Add Sprite to Scene
+	scene.Add(text);
+
+	// Lets rotate text
+	text.Update = function(time)
+	{
+		this.transformation.angle = Math.sin(time);
+	}
+
+	Loop();
+}
+var Loop = function()
+{
+	// Scene Update
+	scene.Update();
+
+	// Draw Scene
+	scene.Draw();
+
+	// Loop
+	requestAnimationFrame(Loop);
+}
+</script>
+</body>
+</html>

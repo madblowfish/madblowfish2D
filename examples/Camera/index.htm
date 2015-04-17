@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MadBlowfish2D - Using Camera</title>
+</head>
+<body onload="Init()">
+<canvas id="CanvasID" width="500" height="500"></canvas>
+<script src="../../build/MadBlowfish2D.min.js"></script>
+<script>
+
+// Our Global Vars
+var scene, loader;
+
+var Init = function()
+{
+
+	// Create Scene and Set Canvas element Id
+	scene = new SceneCanvas("CanvasID");
+	// Lets Load a Texture
+	loader = new PreloadImages();
+	// Lets Load out Texture
+	loader.Load("../assets/HTML5.png").OnComplete(Loaded);
+}
+var Loaded = function()
+{
+	for (var i=0;i<100;i++)
+	{
+		// Create Our Sprite
+		var sprite = new Sprite();
+		sprite.LoadTexture(loader.GetImage("../assets/HTML5.png"));
+
+		// Set in the middle of the Canvas
+		sprite.transformation.position.x = Math.random() * scene.GetWidth();
+		sprite.transformation.position.y = Math.random() * scene.GetHeight();
+
+		// Add Sprite to Scene
+		scene.Add(sprite);
+	}
+
+	Loop();
+}
+var Loop = function()
+{
+	scene.camera.transformation.position.y = Math.sin(scene.GetTime())*100;
+	scene.camera.transformation.position.x = Math.cos(scene.GetTime())*100;
+
+	// Scene Update
+	scene.Update();
+
+	// Draw Scene
+	scene.Draw();
+
+	// Loop
+	requestAnimationFrame(Loop);
+}
+</script>
+</body>
+</html>
