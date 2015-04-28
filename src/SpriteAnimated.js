@@ -76,16 +76,27 @@ SpriteAnimated.prototype.IsPlaying = function () {
  * @returns {number} Number of Frames
  */
 SpriteAnimated.prototype.GetNumberOfFrames = function () {
-    return (this.frameLimit === undefined ? this.textures.length : this.frameLimit);
+    return (this.frameLimit?this.frameLimit:this.textures.length)-(this.frameInit?this.frameInit:0);
 }
+
 /**
- * Set Number of Frames
+ * Set Initial Frame
  * @memberof SpriteAnimated.prototype
- * @param {number} Number of frames to limit animation
+ * @param {number} Frame to Initialize Animation
  */
-SpriteAnimated.prototype.SetNumberOfFrames = function (frames) {
-    this.frameLimit = frames;
+SpriteAnimated.prototype.SetInitialFrame = function (frame) {
+    this.frameInit = frame;
 }
+
+/**
+ * Set Final Frame
+ * @memberof SpriteAnimated.prototype
+ * @param {number} Final Frame Animation
+ */
+SpriteAnimated.prototype.SetFinalFrame = function (frame) {
+    this.frameLimit = frame;
+}
+
 SpriteAnimated.prototype._update = function (time) {
 
     // ---------- Fetch Timers ---------- 
@@ -138,7 +149,7 @@ SpriteAnimated.prototype._update = function (time) {
         }
         this._OnUpdate();
     }
-    this.textureInUse = (this.reverse?(this.GetNumberOfFrames()-this._frame-1):this._frame);
+    this.textureInUse = (this.reverse?(this.GetNumberOfFrames()-this._frame-1):this._frame)+this.frameInit;
     this.Update(time);
 }
 /**

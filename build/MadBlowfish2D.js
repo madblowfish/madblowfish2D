@@ -58,7 +58,7 @@ Layer.prototype = {
 // ----------------------- PreLoad Images ------------------------- //
 
 /**
- * @class PreloadImages
+ * @class
  */
 function PreloadImages() {
     this.assets = new Array();
@@ -242,9 +242,8 @@ Renderable.prototype = {
     * @memberof Renderable.prototype
     * @params {Boolean} Set if Renderable is Clickable or not, Important for Mouse Hover and Out
     */
-    IsClickable: function (clickable) {
-        if (clickable === undefined) return this.isClickable;
-        else this.isClickable = clickable;
+    SetClickable: function (clickable) {
+        this.isClickable = clickable;
     },
     /**
     * Get Width
@@ -353,7 +352,7 @@ var RenderableShape = {
 /**
  * @class
  */
-function Scene(type) 
+function Scene() 
 {
     this.camera = { transformation: new Transformation() };
     this.isTranslated = false;
@@ -401,11 +400,10 @@ Scene.prototype = {
                     this.layers[l].renderables[i]._update(this.currentTime);
                     if (this.usingMouse && this.layers[l].renderables[i]!=undefined)
                     {
-                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].IsClickable()) {
+                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].isClickable) {
                             if (this.layers[l].renderables[i].IsOnCamera()) {
                                 if (this.camera.transformation.scale.x != 1 || this.camera.transformation.scale.y != 1) {
                                     this.layers[l].renderables[i]._OnMouseMove(mouseXScaled - this.camera.transformation.position.x, mouseYScaled - this.camera.transformation.position.y);
-
                                 } else {
                                     this.layers[l].renderables[i]._OnMouseMove(this.mouse.x - this.camera.transformation.position.x, this.mouse.y - this.camera.transformation.position.y);
                                 }
@@ -435,18 +433,6 @@ Scene.prototype = {
         if (layer === undefined) layer = 0;
 
         return this.layers[layer];
-    },
-
-    // Common usage, can be overrided anyway
-    handleEvent: function (event) {
-        switch (event.type) {
-            case 'mousemove':
-                this._MouseMove(event);
-                break;
-            case 'mousedown':
-                this._MouseClick(event);
-                break;
-        };
     },
 
     /**
@@ -587,7 +573,7 @@ Scene.prototype = {
                 if (this.layers[l].visible)
                 {
                     for (var i = this.layers[l].renderables.length - 1; i >= 0; i--) {
-                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].IsClickable()) {
+                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].isClickable) {
                             if (this.layers[l].renderables[i].IsOnCamera()) {
                                 if (this.layers[l].renderables[i]._OnClick(this.mouse.x - this.camera.transformation.position.x, this.mouse.y + this.camera.transformation.position.y)) {
                                     return true;
@@ -620,7 +606,7 @@ Scene.prototype = {
                 if (this.layers[l].visible)
                 {
                     for (var i = this.layers[l].renderables.length - 1; i >= 0; i--) {
-                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].IsClickable()) {
+                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].isClickable) {
                             if (this.layers[l].renderables[i].IsOnCamera()) {
                                 if (this.camera.transformation.scale.x != 1 || this.camera.transformation.scale.y != 1) {
                                     this.layers[l].renderables[i]._OnMouseMove(mouseXScaled - this.camera.transformation.position.x, mouseYScaled - this.camera.transformation.position.y);
@@ -637,7 +623,7 @@ Scene.prototype = {
     },
 
     _MouseClick: function () {
-        this.OnClick(this._OnClick());
+        this._OnClick();
     },
 
     _MouseMove: function (event) {
@@ -660,10 +646,10 @@ Scene.prototype = {
  * @class
  */
 function SceneCanvas(canvas) {
-
+    
     // Call Constructor
     Scene.call(this);
-    
+
     // This way I can send ID or Canvas Object to allow Offscreen Rendering :)
     if (typeof canvas === "string" )
         this.element = document.getElementById(canvas);
@@ -671,12 +657,35 @@ function SceneCanvas(canvas) {
         this.element = canvas;
 
     this.context = this.element.getContext('2d');
-    this.element.addEventListener("mousedown", this, false);
-    this.element.addEventListener("mousemove", this, false);
+
+    this.CreateEventListeners();
 
 }
 SceneCanvas.prototype = Object.create(Scene.prototype);
 SceneCanvas.prototype.constructor = SceneCanvas;
+
+/**
+ * Create Event Listeners
+ * @memberof SceneCanvas.prototype
+ * You can override this method to apply other events
+ */
+SceneCanvas.prototype.CreateEventListeners = function()
+{
+    this.element.addEventListener("mousedown", this, false);
+    this.element.addEventListener("mousemove", this, false);
+
+    this.handleEvent = function(event)
+    {
+        switch (event.type) {
+            case 'mousemove':
+                this._MouseMove(event);
+                break;
+            case 'mousedown':
+                this._MouseClick(event);
+                break;
+        };
+    }
+}
 
 /**
  * Draw
@@ -882,6 +891,7 @@ Sprite.prototype._OnMouseMove = function (mouseX, mouseY) {
             var x = (this.transformation.position.x) - mouseX;
             var y = (this.transformation.position.y) - mouseY;
             var s = this.GetWidth() * this.transformation.scale.x * .5;
+            
             if ((x * x + y * y) < (s * s)) {
                 this.mouseover = true;
                 this.OnMouseOver();
@@ -980,16 +990,27 @@ SpriteAnimated.prototype.IsPlaying = function () {
  * @returns {number} Number of Frames
  */
 SpriteAnimated.prototype.GetNumberOfFrames = function () {
-    return (this.frameLimit === undefined ? this.textures.length : this.frameLimit);
+    return (this.frameLimit?this.frameLimit:this.textures.length)-(this.frameInit?this.frameInit:0);
 }
+
 /**
- * Set Number of Frames
+ * Set Initial Frame
  * @memberof SpriteAnimated.prototype
- * @param {number} Number of frames to limit animation
+ * @param {number} Frame to Initialize Animation
  */
-SpriteAnimated.prototype.SetNumberOfFrames = function (frames) {
-    this.frameLimit = frames;
+SpriteAnimated.prototype.SetInitialFrame = function (frame) {
+    this.frameInit = frame;
 }
+
+/**
+ * Set Final Frame
+ * @memberof SpriteAnimated.prototype
+ * @param {number} Final Frame Animation
+ */
+SpriteAnimated.prototype.SetFinalFrame = function (frame) {
+    this.frameLimit = frame;
+}
+
 SpriteAnimated.prototype._update = function (time) {
 
     // ---------- Fetch Timers ---------- 
@@ -1042,7 +1063,7 @@ SpriteAnimated.prototype._update = function (time) {
         }
         this._OnUpdate();
     }
-    this.textureInUse = (this.reverse?(this.GetNumberOfFrames()-this._frame-1):this._frame);
+    this.textureInUse = (this.reverse?(this.GetNumberOfFrames()-this._frame-1):this._frame)+this.frameInit;
     this.Update(time);
 }
 /**
@@ -1092,6 +1113,58 @@ SpriteAnimated.prototype.Stop = function () {
     this.isPlaying = false;
     this._frame = 0;
 }
+// ---------------------------------------------------------------- //
+// ---------------- Animated Sprites From Atlas ------------------- //
+
+/**
+ * @class
+ */
+function SpriteAnimatedAtlas(fps) {
+    SpriteAnimated.call(this, fps);
+}
+
+SpriteAnimatedAtlas.prototype = Object.create(SpriteAnimated.prototype);
+
+SpriteAnimatedAtlas.prototype.constructor = SpriteAnimatedAtlas;
+
+/**
+ * Load Atlas Image and Get Each Frame
+ * @memberof SpriteAnimatedAtlas.prototype
+ * @params {Object} - Image Object
+ * @params {Number} - Width of each frame
+ * @params {height} - Height of each frame
+ * @params {numberOfFrames} - Number of Frames in Atlas
+ */
+SpriteAnimatedAtlas.prototype.LoadTexture = function(image, framePerColumn, framePerLine, numberOfFrames) {
+    
+    SpriteAnimated.prototype.LoadTexture.call(this, image);
+
+    this.numberOfFrames = numberOfFrames;
+    this.framePerColumn = framePerColumn;
+    this.framePerLine = framePerLine;
+    this.frameWidth = image.width/framePerColumn;
+    this.frameHeight = image.height/framePerLine;
+}
+
+/**
+ * Number of Frames
+ * @memberof SpriteAnimated.prototype
+ * @returns {number} Number of Frames
+ */
+SpriteAnimatedAtlas.prototype.GetNumberOfFrames = function () {
+    return (this.frameLimit?this.frameLimit:this.numberOfFrames)-(this.frameInit?this.frameInit:0);
+}
+
+SpriteAnimatedAtlas.prototype._update = function (time) {
+
+    SpriteAnimated.prototype._update.call(this, time);
+
+    var frameToPlay = this.textureInUse;
+    this.textureInUse = 0;
+
+    this.SetClipping((frameToPlay%this.framePerColumn)*this.frameWidth,Math.floor(frameToPlay/this.framePerColumn)*this.frameHeight, this.frameWidth, this.frameHeight);
+}
+
 // ---------------------------------------------------------------- //
 // -------------------------- Text 2D ----------------------------- //
 

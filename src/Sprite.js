@@ -94,6 +94,7 @@ Sprite.prototype._OnMouseMove = function (mouseX, mouseY) {
             var x = (this.transformation.position.x) - mouseX;
             var y = (this.transformation.position.y) - mouseY;
             var s = this.GetWidth() * this.transformation.scale.x * .5;
+            
             if ((x * x + y * y) < (s * s)) {
                 this.mouseover = true;
                 this.OnMouseOver();

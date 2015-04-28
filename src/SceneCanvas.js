@@ -4,10 +4,10 @@
  * @class
  */
 function SceneCanvas(canvas) {
-
+    
     // Call Constructor
     Scene.call(this);
-    
+
     // This way I can send ID or Canvas Object to allow Offscreen Rendering :)
     if (typeof canvas === "string" )
         this.element = document.getElementById(canvas);
@@ -15,12 +15,35 @@ function SceneCanvas(canvas) {
         this.element = canvas;
 
     this.context = this.element.getContext('2d');
-    this.element.addEventListener("mousedown", this, false);
-    this.element.addEventListener("mousemove", this, false);
+
+    this.CreateEventListeners();
 
 }
 SceneCanvas.prototype = Object.create(Scene.prototype);
 SceneCanvas.prototype.constructor = SceneCanvas;
+
+/**
+ * Create Event Listeners
+ * @memberof SceneCanvas.prototype
+ * You can override this method to apply other events
+ */
+SceneCanvas.prototype.CreateEventListeners = function()
+{
+    this.element.addEventListener("mousedown", this, false);
+    this.element.addEventListener("mousemove", this, false);
+
+    this.handleEvent = function(event)
+    {
+        switch (event.type) {
+            case 'mousemove':
+                this._MouseMove(event);
+                break;
+            case 'mousedown':
+                this._MouseClick(event);
+                break;
+        };
+    }
+}
 
 /**
  * Draw

@@ -79,9 +79,8 @@ Renderable.prototype = {
     * @memberof Renderable.prototype
     * @params {Boolean} Set if Renderable is Clickable or not, Important for Mouse Hover and Out
     */
-    IsClickable: function (clickable) {
-        if (clickable === undefined) return this.isClickable;
-        else this.isClickable = clickable;
+    SetClickable: function (clickable) {
+        this.isClickable = clickable;
     },
     /**
     * Get Width

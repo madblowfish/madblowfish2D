@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MadBlowfish2D - Sprite Animation</title>
+</head>
+<body onload="Init()">
+<canvas id="CanvasID" width="500" height="500"></canvas>
+<script src="../../build/MadBlowfish2D.min.js"></script>
+<script>
+
+// Our Global Vars
+var scene, loader;
+
+var Init = function()
+{
+
+	// Create Scene and Set Canvas element Id
+	scene = new SceneCanvas("CanvasID");
+
+	// Lets Load a Texture
+	loader = new PreloadImages();
+	// Lets Load out Texture
+	loader.Load("../assets/Atlas.png").OnComplete(Loaded);
+}
+var Loaded = function()
+{
+	// Create Our Sprite
+	var sprite = new SpriteAnimatedAtlas(8); // Frames per Second in Animation
+	sprite.LoadTexture(loader.GetImage("../assets/Atlas.png"),6, 3, 14);
+	sprite.Play(0);
+	sprite.SetInitialFrame(0);
+	sprite.SetFinalFrame(6);
+
+	// Set in the middle of the Canvas
+	sprite.transformation.position.x = scene.GetWidth()*.5;
+	sprite.transformation.position.y = scene.GetHeight()*.5;
+
+	// Add Sprite to Scene
+	scene.Add(sprite);
+
+	// Lets add some circular movement to sprite
+	sprite.Update = function(time)
+	{
+		this.transformation.position.y+=Math.sin(time);
+		this.transformation.position.x+=Math.cos(time);
+	}
+	sprite.SetClickable(true);
+	sprite.OnClick = function()
+	{
+		if (this.frameInit==6)
+		{
+			sprite.SetInitialFrame(0);
+			sprite.SetFinalFrame(6);
+		} else {
+			sprite.SetInitialFrame(6);
+			sprite.SetFinalFrame(12);
+		}
+	}
+
+	Loop();
+}
+var Loop = function()
+{
+	// Scene Update
+	scene.Update();
+
+	// Draw Scene
+	scene.Draw();
+
+	// Loop
+	requestAnimationFrame(Loop);
+}
+</script>
+</body>
+</html>

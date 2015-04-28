@@ -3,7 +3,7 @@
 /**
  * @class
  */
-function Scene(type) 
+function Scene() 
 {
     this.camera = { transformation: new Transformation() };
     this.isTranslated = false;
@@ -51,11 +51,10 @@ Scene.prototype = {
                     this.layers[l].renderables[i]._update(this.currentTime);
                     if (this.usingMouse && this.layers[l].renderables[i]!=undefined)
                     {
-                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].IsClickable()) {
+                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].isClickable) {
                             if (this.layers[l].renderables[i].IsOnCamera()) {
                                 if (this.camera.transformation.scale.x != 1 || this.camera.transformation.scale.y != 1) {
                                     this.layers[l].renderables[i]._OnMouseMove(mouseXScaled - this.camera.transformation.position.x, mouseYScaled - this.camera.transformation.position.y);
-
                                 } else {
                                     this.layers[l].renderables[i]._OnMouseMove(this.mouse.x - this.camera.transformation.position.x, this.mouse.y - this.camera.transformation.position.y);
                                 }
@@ -85,18 +84,6 @@ Scene.prototype = {
         if (layer === undefined) layer = 0;
 
         return this.layers[layer];
-    },
-
-    // Common usage, can be overrided anyway
-    handleEvent: function (event) {
-        switch (event.type) {
-            case 'mousemove':
-                this._MouseMove(event);
-                break;
-            case 'mousedown':
-                this._MouseClick(event);
-                break;
-        };
     },
 
     /**
@@ -237,7 +224,7 @@ Scene.prototype = {
                 if (this.layers[l].visible)
                 {
                     for (var i = this.layers[l].renderables.length - 1; i >= 0; i--) {
-                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].IsClickable()) {
+                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].isClickable) {
                             if (this.layers[l].renderables[i].IsOnCamera()) {
                                 if (this.layers[l].renderables[i]._OnClick(this.mouse.x - this.camera.transformation.position.x, this.mouse.y + this.camera.transformation.position.y)) {
                                     return true;
@@ -270,7 +257,7 @@ Scene.prototype = {
                 if (this.layers[l].visible)
                 {
                     for (var i = this.layers[l].renderables.length - 1; i >= 0; i--) {
-                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].IsClickable()) {
+                        if (this.layers[l].renderables[i].IsVisible() && this.layers[l].renderables[i].isClickable) {
                             if (this.layers[l].renderables[i].IsOnCamera()) {
                                 if (this.camera.transformation.scale.x != 1 || this.camera.transformation.scale.y != 1) {
                                     this.layers[l].renderables[i]._OnMouseMove(mouseXScaled - this.camera.transformation.position.x, mouseYScaled - this.camera.transformation.position.y);
@@ -287,7 +274,7 @@ Scene.prototype = {
     },
 
     _MouseClick: function () {
-        this.OnClick(this._OnClick());
+        this._OnClick();
     },
 
     _MouseMove: function (event) {
