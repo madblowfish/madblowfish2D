@@ -1063,7 +1063,7 @@ SpriteAnimated.prototype._update = function (time) {
         }
         this._OnUpdate();
     }
-    this.textureInUse = (this.reverse?(this.GetNumberOfFrames()-this._frame-1):this._frame)+this.frameInit;
+    this.textureInUse = (this.reverse?(this.GetNumberOfFrames()-this._frame-1):this._frame)+(this.frameInit?this.frameInit:0);
     this.Update(time);
 }
 /**

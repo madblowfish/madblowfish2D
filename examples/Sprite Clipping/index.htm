@@ -5,7 +5,7 @@
 </head>
 <body onload="Init()">
 <canvas id="CanvasID" width="500" height="500"></canvas>
-<script src="../../build/MadBlowfish2D.min.js"></script>
+<script src="../../build/MadBlowfish2D.js"></script>
 <script>
 
 // Our Global Vars
@@ -36,7 +36,7 @@ var Loaded = function()
 	// Lets add some circular movement to sprite
 	sprite.Update = function(time)
 	{
-		this.SetClipping(this.GetWidth()*.5+Math.sin(time)*70,0,128,128);
+		this.SetClipping(this.GetWidth()*.5+Math.sin(time)*61,0,128,128);
 	}
 
 	Loop();
