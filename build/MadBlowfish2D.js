@@ -352,7 +352,7 @@ var RenderableShape = {
 /**
  * @class
  */
-function Scene() 
+function Scene()
 {
     this.camera = { transformation: new Transformation() };
     this.isTranslated = false;
@@ -391,11 +391,11 @@ Scene.prototype = {
             var mouseYScaled = SceneOffsetY + this.mouse.y * (this.GetHeight() - SceneOffsetY * 2) / this.GetHeight();
 
         }
-        for (var l = 0; l < this.layers.length; l++) 
+        for (var l = 0; l < this.layers.length; l++)
         {
             if (this.layers[l].visible)
             {
-                for (var i = 0; i < this.layers[l].renderables.length; i++) 
+                for (var i = 0; i < this.layers[l].renderables.length; i++)
                 {
                     this.layers[l].renderables[i]._update(this.currentTime);
                     if (this.usingMouse && this.layers[l].renderables[i]!=undefined)
@@ -559,10 +559,12 @@ Scene.prototype = {
             y: 0
         };
 
-        if (Renderable.transformation.position.x + Renderable.GetWidth() > cam.x && Renderable.transformation.position.x - Renderable.GetWidth() < this.GetWidth() + cam.x && Renderable.transformation.position.y + Renderable.GetHeight() > cam.y * -1 && Renderable.transformation.position.y - Renderable.GetHeight() < this.GetHeight() - cam.y) return true;
+        var a = Renderable.transformation.position.x - Renderable.GetWidth()*.5 * Renderable.transformation.scale.x;
+        var b = Renderable.transformation.position.x + Renderable.GetWidth()*.5 * Renderable.transformation.scale.x;
+        var c = Renderable.transformation.position.y - Renderable.GetHeight()*.5 * Renderable.transformation.scale.y;
+        var d = Renderable.transformation.position.y + Renderable.GetWidth()*.5 * Renderable.transformation.scale.y;
 
-        // Throw others away
-        return false;
+        return ((a<-cam.x + this.GetWidth()) && (-cam.x<b) && (c<-cam.y + this.GetHeight()) && (d>-cam.y));
     },
 
     _OnClick: function () {
@@ -601,7 +603,7 @@ Scene.prototype = {
                 var mouseYScaled = SceneOffsetY + mouseY * (this.GetHeight() - SceneOffsetY * 2) / this.GetHeight();
 
             }
-            for (var l = this.layers.length - 1; l >= 0; l--) 
+            for (var l = this.layers.length - 1; l >= 0; l--)
             {
                 if (this.layers[l].visible)
                 {
@@ -640,6 +642,7 @@ Scene.prototype = {
     }
 };
 // ---------------------------------------------------------------- //
+
 // ------------------------ SceneCanvas --------------------------- //
 
 /**

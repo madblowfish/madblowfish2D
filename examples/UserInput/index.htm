@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MadBlowfish2D - Using Camera</title>
+</head>
+<body onload="Init()">
+<canvas id="CanvasID" width="500" height="500"></canvas>
+<script src="../../build/MadBlowfish2D.js"></script>
+<script>
+
+// Our Global Vars
+var scene, loader;
+
+// Our Keyboard Keys
+var keyW = keyA = keyS = keyD = false;
+
+var Init = function()
+{
+
+	// Create Scene and Set Canvas element Id
+	scene = new SceneCanvas("CanvasID");
+	// Lets Load a Texture
+	loader = new PreloadImages();
+	// Lets Load out Texture
+	loader.Load("../assets/HTML5.png").OnComplete(Loaded);
+}
+var Loaded = function()
+{
+	for (var i=0;i<1000;i++)
+	{
+		// Create Our Sprite
+		var sprite = new Sprite();
+		sprite.LoadTexture(loader.GetImage("../assets/HTML5.png"));
+
+		// Set in the middle of the Canvas
+		sprite.transformation.position.x = Math.random() * scene.GetWidth();
+		sprite.transformation.position.y = Math.random() * scene.GetHeight();
+		sprite.transformation.scale.y = 0.1;
+		sprite.transformation.scale.x = 0.1;
+
+		// Add Sprite to Scene
+		scene.Add(sprite);
+	}
+
+	Loop();
+}
+var Loop = function()
+{
+
+	// Check Keys
+	CheckKeys();
+
+	// Scene Update
+	scene.Update();
+
+	// Draw Scene
+	scene.Draw();
+
+	// Loop
+	requestAnimationFrame(Loop);
+}
+
+function CheckKeys() {
+		if (keyD == true) {
+		scene.camera.transformation.position.x+=10;
+	}
+	if (keyS == true) {
+		scene.camera.transformation.position.y+=10;
+	}
+	if (keyA == true) {
+		scene.camera.transformation.position.x-=10;
+	}
+	if (keyW == true) {
+		scene.camera.transformation.position.y-=10;
+	}
+}
+
+//Event Listener
+(function() {
+window.addEventListener("keydown", onKeyDown, false);
+window.addEventListener("keyup", onKeyUp, false);
+
+function onKeyDown(event) {
+  var keyCode = event.keyCode;
+  switch (keyCode) {
+    case 68: //d
+      keyD = true;
+      break;
+    case 83: //s
+      keyS = true;
+      break;
+    case 65: //a
+      keyA = true;
+      break;
+    case 87: //w
+      keyW = true;
+      break;
+  }
+}
+
+function onKeyUp(event) {
+  var keyCode = event.keyCode;
+
+  switch (keyCode) {
+    case 68: //d
+      keyD = false;
+      break;
+    case 83: //s
+      keyS = false;
+      break;
+    case 65: //a
+      keyA = false;
+      break;
+    case 87: //w
+      keyW = false;
+      break;
+  }
+}
+})();
+
+</script>
+</body>
+</html>
