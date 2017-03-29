@@ -367,6 +367,7 @@ function Scene()
     this.isCulling = true;
     this.sceneType = undefined;
     this.initTime = new Date().getTime();
+    this.currentTime = 0;
 }
 Scene.prototype = {
 
