@@ -107,9 +107,9 @@ Renderable.prototype = {
         // Virtual Method
     },
     _Draw: function (ctx) {
-        // Using Canvas           
+        // Using Canvas
         ctx.save();
-        ctx.translate(this.transformation.position.x, this.transformation.position.y);
+        ctx.translate(this.transformation.position.x, this.transformation.position.y*-1);
         ctx.rotate(this.transformation.angle);
         ctx.translate(this.transformation.rotationPivot.x, this.transformation.rotationPivot.y);
         this.Draw(ctx);

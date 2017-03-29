@@ -29,10 +29,6 @@ var Loaded = function()
 		var sprite = new Sprite();
 		sprite.LoadTexture(loader.GetImage("../assets/HTML5.png"));
 
-		// Set in the middle of the Canvas
-		sprite.transformation.position.x = scene.GetWidth()*.5-100;
-		sprite.transformation.position.y = scene.GetHeight()*.5-100;		
-
 		// Add Sprite to Scene
 		scene.Add(sprite,i+1);
 
@@ -45,6 +41,8 @@ var Loaded = function()
 }
 var Loop = function()
 {
+	scene.camera.transformation.position.y = Math.sin(scene.GetTime())*100;
+	scene.camera.transformation.position.x = Math.cos(scene.GetTime())*100;
 	// Scene Update
 	scene.Update();
 
