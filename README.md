@@ -23,9 +23,6 @@ var Loaded = function()
 	// Create Our Sprite
 	var sprite = new Sprite();
 	sprite.LoadTexture(loader.GetImage("../assets/HTML5.png"));
-	// Set in the middle of the Canvas
-	sprite.transformation.position.x = scene.GetWidth()*.5;
-	sprite.transformation.position.y = scene.GetHeight()*.5;
 	// Add Sprite to Scene
 	scene.Add(sprite);
 	// Lets add some circular movement to sprite
@@ -34,7 +31,7 @@ var Loaded = function()
 		this.transformation.position.y+=Math.sin(time);
 		this.transformation.position.x+=Math.cos(time);
 	}
-	
+
 	// Call our loop method for the first time
 	Loop();
 }
