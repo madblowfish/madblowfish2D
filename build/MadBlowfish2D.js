@@ -563,9 +563,12 @@ Scene.prototype = {
         var a = Renderable.transformation.position.x - Renderable.GetWidth()*.5 * Renderable.transformation.scale.x;
         var b = Renderable.transformation.position.x + Renderable.GetWidth()*.5 * Renderable.transformation.scale.x;
         var c = Renderable.transformation.position.y - Renderable.GetHeight()*.5 * Renderable.transformation.scale.y;
-        var d = Renderable.transformation.position.y + Renderable.GetWidth()*.5 * Renderable.transformation.scale.y;
+        var d = Renderable.transformation.position.y + Renderable.GetHeight()*.5 * Renderable.transformation.scale.y;
 
-        return ((a<-cam.x + this.GetWidth()) && (-cam.x<b) && (c<-cam.y + this.GetHeight()) && (d>-cam.y));
+        return ((!(a+cam.x>this.GetWidth()*.5))
+        && (!(b+cam.x<-this.GetWidth()*.5))
+        && (!(this.GetHeight()*.5 < c + cam.y))
+        && (!(-this.GetHeight()*.5 > d + cam.y)));
     },
 
     _OnClick: function () {
@@ -650,14 +653,14 @@ Scene.prototype = {
  * @class
  */
 function SceneCanvas(canvas) {
-    
+
     // Call Constructor
     Scene.call(this);
 
     // This way I can send ID or Canvas Object to allow Offscreen Rendering :)
     if (typeof canvas === "string" )
         this.element = document.getElementById(canvas);
-    else 
+    else
         this.element = canvas;
 
     this.context = this.element.getContext('2d');
@@ -701,6 +704,10 @@ SceneCanvas.prototype.Draw = function () {
 
     ctx.clearRect(0, 0, this.element.width, this.element.height);
 
+    // Change Coordinate System
+    ctx.save();
+    ctx.translate(this.GetWidth()*.5, this.GetHeight()*.5);
+
     for (var l = 0; l < this.layers.length; l++) {
 
         // Set Default Scene Opacity
@@ -712,7 +719,7 @@ SceneCanvas.prototype.Draw = function () {
         ctx.save();
 
         // Layer Transforms
-        if (this.layers[l].hasTransformations) 
+        if (this.layers[l].hasTransformations)
         {
             ctx.save();
             ctx.translate(this.layers[l].transformation.position.x, this.layers[l].transformation.position.y);
@@ -721,11 +728,11 @@ SceneCanvas.prototype.Draw = function () {
         }
 
         // Not Changed by Camera
-        for (var i = 0; i < this.layers[l].renderables.length; i++) 
+        for (var i = 0; i < this.layers[l].renderables.length; i++)
         {
-            if (!this.layers[l].renderables[i].IsOnCamera() && this.layers[l].visible) 
+            if (!this.layers[l].renderables[i].IsOnCamera() && this.layers[l].visible)
             {
-                if (this.layers[l].renderables[i].IsVisible() && this._Culling(this.layers[l].renderables[i])) 
+                if (this.layers[l].renderables[i].IsVisible() && this._Culling(this.layers[l].renderables[i]))
                 {
                     // Set Layer Opacity
                     if (this.layers[l].GetOpacity() != 1) {
@@ -797,8 +804,11 @@ SceneCanvas.prototype.Draw = function () {
 
     }
     ctx.restore();
+
+    ctx.restore();
 };
 // ---------------------------------------------------------------- //
+
 // -------------------------- Sprites ----------------------------- //
 
 /**
@@ -1335,8 +1345,8 @@ Vector2D.prototype = {
      * @param {object} - Vector to Add
      * @returns {object} - Vector Sum
      */
-    Add: function(vec) 
-    { 
+    Add: function(vec)
+    {
         if (vec instanceof Vector2D)
             return new Vector2D(this.x+vec.x, this.y+vec.y);
         else
@@ -1348,7 +1358,7 @@ Vector2D.prototype = {
      * @param {object} - Vector to Subtract
      * @returns {object} - Vector Subtracted
      */
-    Sub: function(vec) 
+    Sub: function(vec)
     {
         if (vec instanceof Vector2D)
             return new Vector2D(this.x-vec.x, this.y-vec.y);
@@ -1361,12 +1371,12 @@ Vector2D.prototype = {
      * @param {object} - Vector to Multiply
      * @returns {object} - Vector Multiplied
      */
-    Mul: function(vec) 
+    Mul: function(vec)
     {
         if (vec instanceof Vector2D)
-            return new Vector2D(this.x*vec.x,this.y*vec.y); 
+            return new Vector2D(this.x*vec.x,this.y*vec.y);
         else
-            return new Vector2D(this.x*vec,this.y*vec); 
+            return new Vector2D(this.x*vec,this.y*vec);
     },
     /**
      * Div
@@ -1374,12 +1384,12 @@ Vector2D.prototype = {
      * @param {object} - Vector to Divide
      * @returns {object} - Vector Divided
      */
-    Div: function(vec) 
+    Div: function(vec)
     {
         if (vec instanceof Vector2D)
-            return new Vector2D(this.x/vec.x,this.y/vec.y); 
+            return new Vector2D(this.x/vec.x,this.y/vec.y);
         else
-            return new Vector2D(this.x/vec,this.y/vec); 
+            return new Vector2D(this.x/vec,this.y/vec);
     },
     /**
      * Distance Square

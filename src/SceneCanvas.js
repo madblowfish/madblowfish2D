@@ -4,14 +4,14 @@
  * @class
  */
 function SceneCanvas(canvas) {
-    
+
     // Call Constructor
     Scene.call(this);
 
     // This way I can send ID or Canvas Object to allow Offscreen Rendering :)
     if (typeof canvas === "string" )
         this.element = document.getElementById(canvas);
-    else 
+    else
         this.element = canvas;
 
     this.context = this.element.getContext('2d');
@@ -55,6 +55,10 @@ SceneCanvas.prototype.Draw = function () {
 
     ctx.clearRect(0, 0, this.element.width, this.element.height);
 
+    // Change Coordinate System
+    ctx.save();
+    ctx.translate(this.GetWidth()*.5, this.GetHeight()*.5);
+
     for (var l = 0; l < this.layers.length; l++) {
 
         // Set Default Scene Opacity
@@ -66,7 +70,7 @@ SceneCanvas.prototype.Draw = function () {
         ctx.save();
 
         // Layer Transforms
-        if (this.layers[l].hasTransformations) 
+        if (this.layers[l].hasTransformations)
         {
             ctx.save();
             ctx.translate(this.layers[l].transformation.position.x, this.layers[l].transformation.position.y);
@@ -75,11 +79,11 @@ SceneCanvas.prototype.Draw = function () {
         }
 
         // Not Changed by Camera
-        for (var i = 0; i < this.layers[l].renderables.length; i++) 
+        for (var i = 0; i < this.layers[l].renderables.length; i++)
         {
-            if (!this.layers[l].renderables[i].IsOnCamera() && this.layers[l].visible) 
+            if (!this.layers[l].renderables[i].IsOnCamera() && this.layers[l].visible)
             {
-                if (this.layers[l].renderables[i].IsVisible() && this._Culling(this.layers[l].renderables[i])) 
+                if (this.layers[l].renderables[i].IsVisible() && this._Culling(this.layers[l].renderables[i]))
                 {
                     // Set Layer Opacity
                     if (this.layers[l].GetOpacity() != 1) {
@@ -150,6 +154,8 @@ SceneCanvas.prototype.Draw = function () {
         }
 
     }
+    ctx.restore();
+
     ctx.restore();
 };
 // ---------------------------------------------------------------- //

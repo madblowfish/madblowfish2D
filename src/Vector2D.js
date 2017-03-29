@@ -57,8 +57,8 @@ Vector2D.prototype = {
      * @param {object} - Vector to Add
      * @returns {object} - Vector Sum
      */
-    Add: function(vec) 
-    { 
+    Add: function(vec)
+    {
         if (vec instanceof Vector2D)
             return new Vector2D(this.x+vec.x, this.y+vec.y);
         else
@@ -70,7 +70,7 @@ Vector2D.prototype = {
      * @param {object} - Vector to Subtract
      * @returns {object} - Vector Subtracted
      */
-    Sub: function(vec) 
+    Sub: function(vec)
     {
         if (vec instanceof Vector2D)
             return new Vector2D(this.x-vec.x, this.y-vec.y);
@@ -83,12 +83,12 @@ Vector2D.prototype = {
      * @param {object} - Vector to Multiply
      * @returns {object} - Vector Multiplied
      */
-    Mul: function(vec) 
+    Mul: function(vec)
     {
         if (vec instanceof Vector2D)
-            return new Vector2D(this.x*vec.x,this.y*vec.y); 
+            return new Vector2D(this.x*vec.x,this.y*vec.y);
         else
-            return new Vector2D(this.x*vec,this.y*vec); 
+            return new Vector2D(this.x*vec,this.y*vec);
     },
     /**
      * Div
@@ -96,12 +96,12 @@ Vector2D.prototype = {
      * @param {object} - Vector to Divide
      * @returns {object} - Vector Divided
      */
-    Div: function(vec) 
+    Div: function(vec)
     {
         if (vec instanceof Vector2D)
-            return new Vector2D(this.x/vec.x,this.y/vec.y); 
+            return new Vector2D(this.x/vec.x,this.y/vec.y);
         else
-            return new Vector2D(this.x/vec,this.y/vec); 
+            return new Vector2D(this.x/vec,this.y/vec);
     },
     /**
      * Distance Square
