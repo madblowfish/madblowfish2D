@@ -566,10 +566,10 @@ Scene.prototype = {
         var c = -Renderable.transformation.position.y - Renderable.GetHeight()*.5 * Renderable.transformation.scale.y;
         var d = -Renderable.transformation.position.y + Renderable.GetHeight()*.5 * Renderable.transformation.scale.y;
 
-        return ((!(a+cam.x>this.GetWidth()*.5))
-        && (!(b+cam.x<-this.GetWidth()*.5))
-        && (!(this.GetHeight()*.5 < c + cam.y))
-        && (!(-this.GetHeight()*.5 > d + cam.y)));
+        return ((!(a+cam.x>this.GetWidth()))
+        && (!(b+cam.x<-this.GetWidth()))
+        && (!(this.GetHeight() < c + cam.y))
+        && (!(-this.GetHeight() > d + cam.y)));
     },
 
     _OnClick: function () {
